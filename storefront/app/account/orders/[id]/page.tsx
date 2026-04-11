@@ -72,11 +72,15 @@ function StatusBadge({ status, type }: { status: string; type: 'order' | 'paymen
 
 // Order timeline component
 function OrderTimeline({ order }: { order: Order }) {
+  const fulfillmentStatus = order.fulfillment_status as string
+  const hasShipped = fulfillmentStatus === 'shipped' || fulfillmentStatus === 'partially_shipped' || fulfillmentStatus === 'delivered'
+  const hasDelivered = fulfillmentStatus === 'delivered'
+
   const steps = [
     { label: 'Placed', completed: true },
     { label: 'Paid', completed: order.payment_status === 'captured' || (order.payment_status as string) === 'paid' },
-    { label: 'Shipped', completed: order.fulfillment_status === 'shipped' || order.fulfillment_status === 'fulfilled' },
-    { label: 'Delivered', completed: order.fulfillment_status === 'fulfilled' },
+    { label: 'Shipped', completed: hasShipped },
+    { label: 'Delivered', completed: hasDelivered },
   ]
 
   return (
