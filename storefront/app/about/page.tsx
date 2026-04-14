@@ -1,61 +1,69 @@
 import { Metadata } from 'next'
 
-export const metadata: Metadata = { title: 'About Us' }
+export const metadata: Metadata = { title: 'About Azaan' }
 
 export default function AboutPage() {
   return (
     <>
       <div className="border-b">
         <div className="container-custom py-section-sm text-center">
-          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-2">Our Story</p>
-          <h1 className="text-h1 font-heading font-semibold">About Us</h1>
+          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-2">Meet the Founder</p>
+          <h1 className="text-h1 font-heading font-semibold">About Azaan</h1>
         </div>
       </div>
 
       <div className="container-custom py-section max-w-3xl">
         <div className="prose prose-lg mx-auto space-y-8 text-muted-foreground leading-relaxed">
           <p className="text-foreground text-xl font-heading leading-relaxed">
-            We started with a simple belief: everyday objects should be beautiful, functional,
-            and made to last. No compromises.
+            Hi, I&apos;m Azaan — and this store is my love letter to India&apos;s rich culture,
+            vibrant flavours, and timeless traditions.
           </p>
 
           <p>
-            Founded in 2024, our store was born from a desire to curate products that bring
-            intention to daily life. We partner with artisans and small-batch manufacturers
-            who share our commitment to quality materials and thoughtful design.
+            Growing up surrounded by the sights, smells, and warmth of Indian life, I always
+            believed that the best of India deserved to reach every corner of the world. Azaan&apos;s
+            Indian Store was born from that belief — a carefully curated collection of authentic
+            Indian products, brought to you with pride and passion.
+          </p>
+
+          <p>
+            Every item in this store is personally selected by me. Whether it&apos;s a fragrant spice
+            blend from a family kitchen, a handcrafted piece of décor, or a flavour that takes you
+            straight back to your dadi&apos;s home — I want every purchase to feel personal, genuine,
+            and full of heart.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-8 py-8 border-y not-prose">
             <div>
               <p className="text-3xl font-heading font-semibold text-foreground">100%</p>
-              <p className="text-sm text-muted-foreground mt-1">Ethically sourced materials</p>
+              <p className="text-sm text-muted-foreground mt-1">Authentic Indian products</p>
             </div>
             <div>
-              <p className="text-3xl font-heading font-semibold text-foreground">50+</p>
-              <p className="text-sm text-muted-foreground mt-1">Artisan partners worldwide</p>
+              <p className="text-3xl font-heading font-semibold text-foreground">Handpicked</p>
+              <p className="text-sm text-muted-foreground mt-1">Every item personally chosen by Azaan</p>
             </div>
             <div>
-              <p className="text-3xl font-heading font-semibold text-foreground">30-Day</p>
-              <p className="text-sm text-muted-foreground mt-1">No-questions-asked returns</p>
+              <p className="text-3xl font-heading font-semibold text-foreground">India-rooted</p>
+              <p className="text-sm text-muted-foreground mt-1">Sourced straight from the heart of India</p>
             </div>
             <div>
-              <p className="text-3xl font-heading font-semibold text-foreground">Carbon</p>
-              <p className="text-sm text-muted-foreground mt-1">Neutral shipping on every order</p>
+              <p className="text-3xl font-heading font-semibold text-foreground">With Love</p>
+              <p className="text-sm text-muted-foreground mt-1">Built on culture, tradition & passion</p>
             </div>
           </div>
 
-          <h2 className="text-h3 font-heading font-semibold text-foreground">Our Philosophy</h2>
+          <h2 className="text-h3 font-heading font-semibold text-foreground">Why I Started This</h2>
           <p>
-            We believe in fewer, better things. Every product in our collection is chosen for
-            its craftsmanship, longevity, and the story behind it. We&apos;d rather offer one
-            exceptional version of something than ten mediocre options.
+            I noticed how hard it was to find truly authentic Indian products — ones that weren&apos;t
+            watered down or mass-produced. I wanted to bridge that gap and create a space where
+            the real India shines through in every product, every package, every order.
           </p>
 
-          <h2 className="text-h3 font-heading font-semibold text-foreground">Sustainability</h2>
+          <h2 className="text-h3 font-heading font-semibold text-foreground">My Promise to You</h2>
           <p>
-            From packaging to shipping, we&apos;re committed to reducing our environmental
-            footprint. All orders ship in recycled and recyclable materials. We offset 100%
-            of carbon emissions from shipping through verified carbon removal projects.
+            When you shop with me, you&apos;re not just buying a product — you&apos;re supporting a
+            dream, a culture, and a community. I stand behind everything I sell, and I&apos;m always
+            here if you have any questions, feedback, or just want to talk about India. 🇮🇳
           </p>
         </div>
       </div>
