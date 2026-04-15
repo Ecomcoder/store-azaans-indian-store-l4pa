@@ -2,59 +2,55 @@
 
 import { useState } from 'react'
 import { useReviews } from '@amboras-test-az/reviews'
-import StarRating from './StarRating'
-import ReviewForm from './ReviewForm'
-import { MessageSquare, ChevronDown } from 'lucide-react'
+import { StarRating } from './StarRating'
+import { ReviewForm } from './ReviewForm'
+import { MessageSquarePlus, Star } from 'lucide-react'
 
 interface ReviewsWidgetProps {
   productId: string
 }
 
-export default function ReviewsWidget({ productId }: ReviewsWidgetProps) {
+export function ReviewsWidget({ productId }: ReviewsWidgetProps) {
+  const { data, isLoading } = useReviews(productId)
   const [showForm, setShowForm] = useState(false)
-  const [offset, setOffset] = useState(0)
-  const limit = 5
 
-  const { reviews, count, isLoading } = useReviews(productId, { limit, offset })
+  const reviews = data?.reviews ?? []
+  const total = data?.total ?? 0
+  const averageRating = data?.averageRating ?? 0
 
-  const averageRating =
-    reviews && reviews.length > 0
-      ? reviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / reviews.length
-      : 0
-
-  const totalPages = Math.ceil((count ?? 0) / limit)
-  const currentPage = Math.floor(offset / limit) + 1
+  // Rating distribution
+  const ratingCounts = [5, 4, 3, 2, 1].map((star) => ({
+    star,
+    count: reviews.filter((r) => r.rating === star).length,
+  }))
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <section className="border-t mt-12 pt-10">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-          <h2 className="text-xl font-heading font-semibold text-foreground">
-            Customer Reviews
-          </h2>
-          {count !== undefined && count > 0 && (
+          <h2 className="text-h3 font-heading font-semibold">Customer Reviews</h2>
+          {total > 0 && (
             <div className="flex items-center gap-2 mt-1">
               <StarRating rating={Math.round(averageRating)} size="sm" />
               <span className="text-sm text-muted-foreground">
-                {averageRating.toFixed(1)} out of 5 &middot; {count} {count === 1 ? 'review' : 'reviews'}
+                {averageRating.toFixed(1)} out of 5 · {total} review{total !== 1 ? 's' : ''}
               </span>
             </div>
           )}
         </div>
         <button
           onClick={() => setShowForm((prev) => !prev)}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium border border-border rounded-md hover:bg-muted transition-colors"
+          className="inline-flex items-center gap-2 border border-foreground text-foreground px-4 py-2.5 text-sm font-medium rounded-sm hover:bg-foreground hover:text-background transition-colors"
         >
-          <MessageSquare className="w-4 h-4" />
-          {showForm ? 'Cancel' : 'Write a Review'}
+          <MessageSquarePlus className="h-4 w-4" />
+          Write a Review
         </button>
       </div>
 
-      {/* Review Form */}
+      {/* Write Review Form */}
       {showForm && (
-        <div className="border border-border rounded-lg p-6 bg-muted/30">
-          <h3 className="text-base font-medium text-foreground mb-4">Share Your Experience</h3>
+        <div className="bg-muted/40 border border-border rounded-sm p-6 mb-8">
+          <h3 className="font-semibold mb-4">Write a Review</h3>
           <ReviewForm
             productId={productId}
             onSuccess={() => setShowForm(false)}
@@ -62,99 +58,83 @@ export default function ReviewsWidget({ productId }: ReviewsWidgetProps) {
         </div>
       )}
 
-      {/* Reviews List */}
-      {isLoading ? (
+      {isLoading && (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="animate-pulse space-y-2 border-b border-border pb-4">
-              <div className="h-4 bg-muted rounded w-24" />
+            <div key={i} className="animate-pulse border border-border rounded-sm p-5">
+              <div className="h-4 bg-muted rounded w-32 mb-3" />
+              <div className="h-3 bg-muted rounded w-24 mb-2" />
               <div className="h-3 bg-muted rounded w-full" />
-              <div className="h-3 bg-muted rounded w-3/4" />
             </div>
           ))}
-        </div>
-      ) : reviews && reviews.length > 0 ? (
-        <div className="space-y-6">
-          {reviews.map((review: {
-            id: string
-            rating: number
-            title?: string
-            content?: string
-            first_name?: string
-            last_name?: string
-            created_at: string
-          }) => (
-            <div key={review.id} className="border-b border-border pb-6 last:border-0">
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <StarRating rating={review.rating} size="sm" />
-                    {review.title && (
-                      <span className="text-sm font-medium text-foreground truncate">
-                        {review.title}
-                      </span>
-                    )}
-                  </div>
-                  {review.content && (
-                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                      {review.content}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-xs text-muted-foreground">
-                      {[review.first_name, review.last_name].filter(Boolean).join(' ') || 'Anonymous'}
-                    </span>
-                    <span className="text-xs text-muted-foreground">&middot;</span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(review.created_at).toLocaleDateString('en-IN', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                      })}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 pt-2">
-              <button
-                onClick={() => setOffset(Math.max(0, offset - limit))}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                Previous
-              </button>
-              <span className="text-sm text-muted-foreground">
-                Page {currentPage} of {totalPages}
-              </span>
-              <button
-                onClick={() => setOffset(offset + limit)}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-muted disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="text-center py-10 border border-dashed border-border rounded-lg">
-          <MessageSquare className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-          <p className="text-sm text-muted-foreground">No reviews yet. Be the first to share your thoughts!</p>
-          {!showForm && (
-            <button
-              onClick={() => setShowForm(true)}
-              className="mt-3 text-sm font-medium text-foreground underline underline-offset-2 hover:opacity-70 transition-opacity"
-            >
-              Write a review
-            </button>
-          )}
         </div>
       )}
-    </div>
+
+      {!isLoading && total === 0 && !showForm && (
+        <div className="text-center py-12 border border-dashed border-border rounded-sm">
+          <Star className="h-8 w-8 mx-auto mb-3 text-muted-foreground/40" strokeWidth={1.5} />
+          <p className="font-medium text-foreground">No reviews yet</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Be the first to share your experience!
+          </p>
+        </div>
+      )}
+
+      {!isLoading && total > 0 && (
+        <div className="grid lg:grid-cols-[240px_1fr] gap-8">
+          {/* Rating Breakdown */}
+          <div className="bg-muted/40 border border-border rounded-sm p-5 h-fit">
+            <div className="text-center mb-4">
+              <p className="text-4xl font-heading font-bold">{averageRating.toFixed(1)}</p>
+              <StarRating rating={Math.round(averageRating)} size="md" />
+              <p className="text-xs text-muted-foreground mt-1">{total} review{total !== 1 ? 's' : ''}</p>
+            </div>
+            <div className="space-y-2">
+              {ratingCounts.map(({ star, count }) => (
+                <div key={star} className="flex items-center gap-2 text-xs">
+                  <span className="w-4 text-right text-muted-foreground">{star}</span>
+                  <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
+                  <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-amber-400 rounded-full transition-all"
+                      style={{ width: total > 0 ? `${(count / total) * 100}%` : '0%' }}
+                    />
+                  </div>
+                  <span className="w-4 text-muted-foreground">{count}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Review List */}
+          <div className="space-y-4">
+            {reviews.map((review) => (
+              <div key={review.id} className="border border-border rounded-sm p-5 space-y-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="font-medium text-sm">{review.reviewer_name}</p>
+                    <StarRating rating={review.rating} size="sm" />
+                  </div>
+                  {review.created_at && (
+                    <time className="text-xs text-muted-foreground shrink-0">
+                      {new Date(review.created_at).toLocaleDateString('en-IN', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </time>
+                  )}
+                </div>
+                {review.body && (
+                  <p className="text-sm text-foreground/80 leading-relaxed">{review.body}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
   )
 }
+
+export default ReviewsWidget
