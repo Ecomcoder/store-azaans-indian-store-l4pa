@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { Truck, RotateCcw, Shield, ChevronRight } from 'lucide-react'
 import ProductActions from '@/components/product/product-actions'
 import ProductAccordion from '@/components/product/product-accordion'
+import ReviewsWidget from '@/components/reviews/reviews-widget'
 import { ProductViewTracker } from '@/components/product/product-view-tracker'
 import { getProductPlaceholder } from '@/lib/utils/placeholder-images'
 import { type VariantExtension } from '@/components/product/product-price'
@@ -203,6 +204,8 @@ export default async function ProductPage({
             />
           </div>
         </div>
+        {/* Reviews Section */}
+        <ReviewsWidget productId={product.id} />
       </div>
     </>
   )
